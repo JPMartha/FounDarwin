@@ -1,4 +1,4 @@
-@testable import FTDarwin
+@testable import FounDarwin
 import XCTest
 
 final class CommandTests: XCTestCase {

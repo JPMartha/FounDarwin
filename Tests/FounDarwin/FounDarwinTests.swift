@@ -1,7 +1,7 @@
 import XCTest
-@testable import FTDarwin
+@testable import FounDarwin
 
-class FTDarwinTests: XCTestCase {
+class FounDarwinTests: XCTestCase {
 
 	func testExample() {
 		// This is an example of a functional test case.
@@ -9,8 +9,8 @@ class FTDarwinTests: XCTestCase {
 	}
 
 }
-extension FTDarwinTests {
-	static var allTests : [(String, FTDarwinTests -> () throws -> Void)] {
+extension FounDarwinTests {
+	static var allTests : [(String, FounDarwinTests -> () throws -> Void)] {
 		return [
 			("testExample", testExample),
 		]
