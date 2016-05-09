@@ -1,5 +1,8 @@
 import PackageDescription
 
 let package = Package(
-    name: "FounDarwin"
+    name: "FounDarwin",
+    targets: [
+        Target(name: "FounDarwin")
+    ]
 )
