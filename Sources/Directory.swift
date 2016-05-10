@@ -3,11 +3,11 @@ import Darwin
 public func currentDirectoryPath() throws -> String {
     let cwd = getcwd(nil, Int(PATH_MAX))
     guard cwd != nil else {
-        // TODO:
+        // FIXME:
         free(cwd)
         throw Error.CannotGetCwd
     }
-    guard let path = String(validatingUTF8: cwd) else { throw Error.CannotGetCwd }
+    guard let path = String(validatingUTF8: cwd!) else { throw Error.CannotGetCwd }
     return path
 }
 

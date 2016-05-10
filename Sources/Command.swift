@@ -1,5 +1,7 @@
 import Darwin
 
+private var cd = String()
+
 public func executeCommand(argments args: [String]) -> String? {
     var pipe: [Int32] = [0, 0]
     Darwin.pipe(&pipe)
@@ -40,4 +42,72 @@ public func executeCommand(argments args: [String]) -> String? {
     close(pipe[0])
     
     return outputString.isEmpty ? nil : outputString
+}
+
+public func downloadPackage(snapshotVersion: String) {
+    
+    // A Work In Progress
+    
+    let fp = popen("curl -O https://swift.org/builds/development/xcode/\(snapshotVersion)/\(snapshotVersion)-osx.pkg", "r")
+    print("")
+    print("Downloading...")
+    print("")
+    
+    pclose(fp)
+    
+    print("")
+}
+
+public func installPackage(snapshotVersion: String) {
+    
+    // A Work In Progress
+    do {
+        cd = try currentDirectoryPath()
+    } catch {
+        // TODO: Error Handling
+        print(Error.CannotGetCwd)
+        return
+    }
+    
+    guard !cd.isEmpty else {
+        // TODO: Error Handling
+        print(Error.CannotGetCwd)
+        return
+    }
+    
+    let fp = popen("sudo installer -pkg \(cd)/\(snapshotVersion)-osx.pkg -target /", "r")
+    print("")
+    print("Installing...")
+    print("")
+    
+    // TODO:
+    let bufferSize = 4096
+    var buffer = [Int8](repeating: 0, count: bufferSize + 1)
+    
+    // FIXME: Hard-Coding
+    fgets(&buffer, Int32(bufferSize), fp)
+    write(STDOUT_FILENO, buffer, bufferSize)
+    buffer = [Int8](repeating: 0, count: bufferSize + 1)
+    fgets(&buffer, Int32(bufferSize), fp)
+    write(STDOUT_FILENO, buffer, bufferSize)
+    buffer = [Int8](repeating: 0, count: bufferSize + 1)
+    fgets(&buffer, Int32(bufferSize), fp)
+    write(STDOUT_FILENO, buffer, bufferSize)
+    buffer = [Int8](repeating: 0, count: bufferSize + 1)
+    
+    pclose(fp)
+    
+    print("")
+}
+
+public func removePkgFile(snapshotVersion: String) {
+    // A Work In Progress
+    
+    let fp = popen("rm \(cd)/\(snapshotVersion)-osx.pkg", "r")
+    pclose(fp)
+    
+    print("")
+    print("Removing...")
+    print("")
+    print("")
 }
