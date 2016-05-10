@@ -14,4 +14,19 @@ final class CommandTests: XCTestCase {
         }
         XCTAssertNotNil(ls)
     }
+    
+    // TODO:
+    /*
+    func testDownloadPackage() {
+        downloadPackage(snapshotVersion: "swift-DEVELOPMENT-SNAPSHOT-2016-05-09-a")
+    }
+    
+    func testInstallPackage() {
+        installPackage(snapshotVersion: "swift-DEVELOPMENT-SNAPSHOT-2016-05-09-a")
+    }
+ 
+    func testRemovePkgFile() {
+        
+    }
+     */
 }
