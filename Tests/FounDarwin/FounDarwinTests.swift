@@ -9,8 +9,9 @@ class FounDarwinTests: XCTestCase {
 	}
 
 }
+
 extension FounDarwinTests {
-	static var allTests : [(String, FounDarwinTests -> () throws -> Void)] {
+	static var allTests : [(String, (FounDarwinTests) -> () throws -> Void)] {
 		return [
 			("testExample", testExample),
 		]
