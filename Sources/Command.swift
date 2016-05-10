@@ -104,16 +104,10 @@ public func removePkgFile(snapshotVersion: String) {
     // A Work In Progress
     
     let fp = popen("rm \(cd)/\(snapshotVersion)-osx.pkg", "r")
-
-    // TODO:
-    let bufferSize = 4096
-    var buffer = [Int8](repeating: 0, count: bufferSize + 1)
-    
-    // FIXME: Hard-Coding
-    fgets(&buffer, Int32(bufferSize), fp)
-    write(STDOUT_FILENO, buffer, bufferSize)
-    
     pclose(fp)
     
+    print("")
+    print("Removing...")
+    print("")
     print("")
 }
