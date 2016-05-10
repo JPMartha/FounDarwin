@@ -109,5 +109,4 @@ public func removePkgFile(snapshotVersion: String) {
     print("")
     print("Removing...")
     print("")
-    print("")
 }
