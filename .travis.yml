@@ -17,8 +17,8 @@ before_install:
         - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then cd "$DIR" ; fi
         - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export SWIFT_VERSION=swift-DEVELOPMENT-SNAPSHOT-2016-05-09-a ; fi
         - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then curl -O https://swift.org/builds/development/xcode/${SWIFT_VERSION}/${SWIFT_VERSION}-osx.pkg ; fi
-       - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo installer -pkg ${SWIFT_VERSION}-osx.pkg -target / ; fi
-       - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export TOOLCHAINS=swift ; fi
+        - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then sudo installer -pkg ${SWIFT_VERSION}-osx.pkg -target / ; fi
+        - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then export TOOLCHAINS=swift ; fi
 script:
   - swift build
   - swift test
