@@ -1,4 +1,6 @@
 import Darwin
+import func Directory.currentDirectoryPath
+import enum Directory.DirectoryError
 
 private var cd = String()
 
@@ -44,11 +46,11 @@ public func executeCommand(argments args: [String]) -> String? {
     return outputString.isEmpty ? nil : outputString
 }
 
-public func downloadPackage(snapshotVersion: String) {
+public func downloadDevelopmentSnapshot(version: String) {
     
     // A Work In Progress
     
-    let fp = popen("curl -O https://swift.org/builds/development/xcode/\(snapshotVersion)/\(snapshotVersion)-osx.pkg", "r")
+    let fp = popen("curl -O https://swift.org/builds/development/xcode/\(version)/\(version)-osx.pkg", "r")
     print("")
     print("Downloading...")
     print("")
@@ -58,42 +60,25 @@ public func downloadPackage(snapshotVersion: String) {
     print("")
 }
 
-public func installPackage(snapshotVersion: String) {
+public func installDevelopmentSnapshot(version: String) throws {
     
     // A Work In Progress
     do {
         cd = try currentDirectoryPath()
     } catch {
         // TODO: Error Handling
-        print(Error.CannotGetCwd)
-        return
+        throw DirectoryError.CannotGetCurrentDirectory
     }
     
     guard !cd.isEmpty else {
         // TODO: Error Handling
-        print(Error.CannotGetCwd)
-        return
+        throw DirectoryError.CannotGetCurrentDirectory
     }
     
-    let fp = popen("sudo installer -pkg \(cd)/\(snapshotVersion)-osx.pkg -target /", "r")
+    let fp = popen("sudo installer -pkg \(cd)/\(version)-osx.pkg -target /", "w")
     print("")
     print("Installing...")
     print("")
-    
-    // TODO:
-    let bufferSize = 4096
-    var buffer = [Int8](repeating: 0, count: bufferSize + 1)
-    
-    // FIXME: Hard-Coding
-    fgets(&buffer, Int32(bufferSize), fp)
-    write(STDOUT_FILENO, buffer, bufferSize)
-    buffer = [Int8](repeating: 0, count: bufferSize + 1)
-    fgets(&buffer, Int32(bufferSize), fp)
-    write(STDOUT_FILENO, buffer, bufferSize)
-    buffer = [Int8](repeating: 0, count: bufferSize + 1)
-    fgets(&buffer, Int32(bufferSize), fp)
-    write(STDOUT_FILENO, buffer, bufferSize)
-    buffer = [Int8](repeating: 0, count: bufferSize + 1)
     
     pclose(fp)
     
@@ -101,7 +86,10 @@ public func installPackage(snapshotVersion: String) {
 }
 
 public func removePkgFile(snapshotVersion: String) {
+    
     // A Work In Progress
+    
+    guard cd.isEmpty else { return }
     
     let fp = popen("rm \(cd)/\(snapshotVersion)-osx.pkg", "r")
     pclose(fp)
