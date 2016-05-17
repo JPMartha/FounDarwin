@@ -17,5 +17,6 @@ let package = Package(
             name: "PackageBuild",
             dependencies: ["Directory"]
         )
-    ]
+    ],
+    exclude: ["scripts"]
 )
