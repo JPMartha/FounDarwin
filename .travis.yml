@@ -11,6 +11,7 @@ script:
   - swift build
   - swift test
 before_install:
+  - chmod ugo+x run-tests.sh
   - ./run-tests.sh
 notifications:
   email: false
