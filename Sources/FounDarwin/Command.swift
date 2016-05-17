@@ -1,4 +1,8 @@
-import Darwin
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin
+#endif
 import func Directory.currentDirectoryPath
 import enum Directory.DirectoryError
 
