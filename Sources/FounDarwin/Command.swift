@@ -8,6 +8,8 @@ import enum Directory.DirectoryError
 
 private var cd = String()
 
+#if os(Linux)
+#else
 public func executeCommand(argments args: [String]) -> String? {
     var pipe: [Int32] = [0, 0]
     Darwin.pipe(&pipe)
@@ -49,6 +51,7 @@ public func executeCommand(argments args: [String]) -> String? {
     
     return outputString.isEmpty ? nil : outputString
 }
+#endif
 
 public func downloadDevelopmentSnapshot(version: String) {
     
