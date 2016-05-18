@@ -1,6 +1,6 @@
 import XCTest
-@testable import FTDarwinTestSuite
+@testable import FounDarwinTestSuite
 
 XCTMain([
-	 testCase(FTDarwinTests.allTests),
+	 testCase(FounDarwinTests.allTests),
 ])
