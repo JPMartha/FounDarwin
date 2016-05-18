@@ -35,6 +35,8 @@ final class DirectoryTests: XCTestCase {
             return
         }
         
+        #if os(Linux)
+        #else
         let fp = popen("echo $PWD", "r")
         
         // FIXME: Hard-Coding
@@ -48,6 +50,7 @@ final class DirectoryTests: XCTestCase {
         pclose(fp)
         
         XCTAssertEqual(String(string.characters.dropLast()), cd)
+        #endif
     }
     
     /*
