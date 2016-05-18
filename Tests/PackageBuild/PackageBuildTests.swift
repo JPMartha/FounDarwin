@@ -13,11 +13,16 @@ final class PackageBuildTests: XCTestCase {
     override func setUp() {
         super.setUp()
         
-        let cwd = getcwd(nil, Int(PATH_MAX))
-        guard let cd = cwd else {
-            free(cwd)
-            return
-        }
+        //#if os(Linux)
+        //    let cd = get_current_dir_name()
+        //#else
+            let cwd = getcwd(nil, Int(PATH_MAX))
+            guard let cd = cwd else {
+                free(cwd)
+                return
+            }
+        //#endif
+        
         workingDirectory = String(validatingUTF8: cd)!
         if access("\(workingDirectory)/\(debugDirectory)/\(packageDirectoryName)", F_OK) == 0 {
             rmdir("\(workingDirectory)/\(debugDirectory)/\(packageDirectoryName)")
@@ -69,4 +74,16 @@ final class PackageBuildTests: XCTestCase {
         )
     }
 #endif
+}
+
+extension PackageBuildTests {
+    static var allTests : [(String, (PackageBuildTests) -> () throws -> Void)] {
+        #if os(Linux)
+        return []
+        #else
+        return [
+            ("testPrepareAndBuildPackage", testPrepareAndBuildPackage),
+        ]
+        #endif
+    }
 }

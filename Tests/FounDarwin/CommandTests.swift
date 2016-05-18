@@ -18,3 +18,15 @@ final class CommandTests: XCTestCase {
     }
 #endif
 }
+
+extension CommandTests {
+#if os(Linux)
+#else
+    static var allTests : [(String, (CommandTests) -> () throws -> Void)] {
+        return [
+                   ("testExecuteCommandNil", testExecuteCommandNil),
+                   ("testExecuteCommandNotNil", testExecuteCommandNotNil),
+        ]
+    }
+#endif
+}
