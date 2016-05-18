@@ -8,13 +8,17 @@ import Darwin
  - seealso: https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/getcwd.3.html
  */
 public func currentDirectoryPath() throws -> String {
-    let cwd = getcwd(nil, Int(PATH_MAX))
-    guard let cd = cwd else {
-        // If buf is NULL, space is allocated as necessary to store the pathname.
-        // This space may later be free(3)'d.
-        free(cwd)
-        throw DirectoryError.CannotGetCurrentDirectory
-    }
+    #if os(Linux)
+        let cd = get_current_dir_name()
+    #else
+        let cwd = getcwd(nil, Int(PATH_MAX))
+        guard let cd = cwd else {
+            // If buf is NULL, space is allocated as necessary to store the pathname.
+            // This space may later be free(3)'d.
+            free(cwd)
+            throw DirectoryError.CannotGetCurrentDirectory
+        }
+    #endif
     guard let path = String(validatingUTF8: cd) else {
         throw DirectoryError.CannotGetCurrentDirectory
     }

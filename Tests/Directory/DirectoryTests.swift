@@ -20,6 +20,7 @@ final class DirectoryTests: XCTestCase {
 
         pwd = String(validatingUTF8: buffer)!
     }
+     */
     
     func testCurrentDirectoryPath() {
         var cd: String
@@ -46,9 +47,10 @@ final class DirectoryTests: XCTestCase {
         }
         pclose(fp)
         
-        XCTAssertEqual(String(string.characters.dropLast()), pwd)
+        XCTAssertEqual(String(string.characters.dropLast()), cd)
     }
     
+    /*
     func testChangeDirectory() {
         // TODO:
         do {
@@ -70,4 +72,12 @@ final class DirectoryTests: XCTestCase {
         XCTAssertTrue(access("\(pwd)/test", F_OK) == 0)
     }
     */
+}
+
+extension DirectoryTests {
+    static var allTests : [(String, (DirectoryTests) -> () throws -> Void)] {
+        return [
+                   ("testCurrentDirectoryPath", testCurrentDirectoryPath),
+        ]
+    }
 }
