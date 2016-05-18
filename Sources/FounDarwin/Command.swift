@@ -51,7 +51,6 @@ public func executeCommand(argments args: [String]) -> String? {
     
     return outputString.isEmpty ? nil : outputString
 }
-#endif
 
 public func downloadDevelopmentSnapshot(version: String) {
     
@@ -105,3 +104,4 @@ public func removePkgFile(snapshotVersion: String) {
     print("Removing...")
     print("")
 }
+#endif

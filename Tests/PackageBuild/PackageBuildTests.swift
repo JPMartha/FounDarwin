@@ -2,6 +2,8 @@
 import XCTest
 
 final class PackageBuildTests: XCTestCase {
+#if os(Linux)
+#else
     private var workingDirectory = String()
     private let debugDirectory = ".build/debug"
     private let packageDirectoryName = "package"
@@ -66,4 +68,5 @@ final class PackageBuildTests: XCTestCase {
             "access \(workingDirectory)/\(packageFileName)"
         )
     }
+#endif
 }
