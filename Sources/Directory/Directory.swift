@@ -9,7 +9,11 @@ import Darwin
  */
 public func currentDirectoryPath() throws -> String {
     #if os(Linux)
-        let cd = get_current_dir_name()
+        let cwd = getcwd(nil, 0)
+        guard let cd = cwd else {
+            free(cwd)
+            throw DirectoryError.CannotGetCurrentDirectory
+        }
     #else
         let cwd = getcwd(nil, Int(PATH_MAX))
         guard let cd = cwd else {
