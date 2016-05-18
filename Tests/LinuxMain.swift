@@ -1,5 +1,8 @@
 import XCTest
 @testable import FounDarwinTestSuite
+@testable import DirectoryTestSuite
+@testable import FileTestSuite
+@testable import PackageBuildTestSuite
 
 XCTMain([
 	 testCase(FounDarwinTests.allTests),
