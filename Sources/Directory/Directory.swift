@@ -1,4 +1,8 @@
+#if os(Linux)
+import Glibc
+#else
 import Darwin
+#endif
 
 /**
  - seealso: https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/getcwd.3.html

@@ -2,6 +2,8 @@
 import XCTest
 
 final class CommandTests: XCTestCase {
+#if os(Linux)
+#else
     func testExecuteCommandNil() {
         let export = executeCommand(argments: ["export", "PATH=/Library/Developer/Toolchains/swift-latest.xctoolchain/usr/bin:\"${PATH}\""])
         XCTAssertNil(export)
@@ -14,4 +16,5 @@ final class CommandTests: XCTestCase {
         }
         XCTAssertNotNil(ls)
     }
+#endif
 }

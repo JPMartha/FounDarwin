@@ -1,9 +1,15 @@
+#if os(Linux)
+import Glibc
+#else
 import Darwin
+#endif
 import func Directory.currentDirectoryPath
 import enum Directory.DirectoryError
 
 private var cd = String()
 
+#if os(Linux)
+#else
 public func executeCommand(argments args: [String]) -> String? {
     var pipe: [Int32] = [0, 0]
     Darwin.pipe(&pipe)
@@ -98,3 +104,4 @@ public func removePkgFile(snapshotVersion: String) {
     print("Removing...")
     print("")
 }
+#endif

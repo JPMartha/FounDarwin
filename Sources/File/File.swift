@@ -1,4 +1,8 @@
-import Darwin
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin
+#endif
 
 public func isAccessibleFile(path: String) -> Bool {
     guard !path.isEmpty else { return false}
