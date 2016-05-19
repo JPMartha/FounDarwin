@@ -38,33 +38,32 @@ final class DirectoryTests: XCTestCase {
         #if os(Linux)
             print("CurrentDirectoryPath: \(cd)")
         #else
-        let fp = popen("echo $PWD", "r")
-        
-        // FIXME: Hard-Coding
-        let bufferSize = 4096
-        var buffer = [Int8](repeating: 0, count: bufferSize + 1)
-        fgets(&buffer, Int32(bufferSize), fp)
-        guard let string = String(validatingUTF8: buffer) else {
-            XCTFail()
-            return
-        }
-        pclose(fp)
-        
-        XCTAssertEqual(String(string.characters.dropLast()), cd)
+            let fp = popen("echo $PWD", "r")
+            
+            // FIXME: Hard-Coding
+            let bufferSize = 4096
+            var buffer = [Int8](repeating: 0, count: bufferSize + 1)
+            fgets(&buffer, Int32(bufferSize), fp)
+            guard let string = String(validatingUTF8: buffer) else {
+                XCTFail()
+                return
+            }
+            pclose(fp)
+            
+            XCTAssertEqual(String(string.characters.dropLast()), cd)
         #endif
     }
     
-    /*
     func testChangeDirectory() {
-        // TODO:
         do {
-            try changeDirectory(path: "\(pwd)")
+            try changeDirectory(path: "..")
         } catch {
             XCTFail()
             return
         }
     }
     
+    /*
     func testCreateDirectory() {
         // TODO:
         do {
@@ -82,6 +81,7 @@ extension DirectoryTests {
     static var allTests : [(String, (DirectoryTests) -> () throws -> Void)] {
         return [
                    ("testCurrentDirectoryPath", testCurrentDirectoryPath),
+                   ("testChangeDirectory", testChangeDirectory),
         ]
     }
 }
