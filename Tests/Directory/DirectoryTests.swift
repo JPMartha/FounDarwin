@@ -55,10 +55,26 @@ final class DirectoryTests: XCTestCase {
     }
     
     func testChangeDirectory() {
+        #if os(Linux)
+            let path = ".."
+        #else
+            let cwd = getcwd(nil, Int(PATH_MAX))
+            guard let cd = cwd else {
+                // If buf is NULL, space is allocated as necessary to store the pathname.
+                // This space may later be free(3)'d.
+                free(cwd)
+                XCTFail("Cannot getcwd")
+                return
+            }
+            guard let path = String(validatingUTF8: cd) else {
+                XCTFail("Cannot validatingUTF8")
+                return
+            }
+        #endif
         do {
-            try changeDirectory(path: "..")
+            try changeDirectory(path: path)
         } catch {
-            XCTFail()
+            XCTFail("Cannot changeDirectory")
             return
         }
     }
