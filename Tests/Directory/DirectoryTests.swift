@@ -36,7 +36,7 @@ final class DirectoryTests: XCTestCase {
         }
         
         #if os(Linux)
-            print(cd)
+            print("CurrentDirectoryPath: \(cd)")
         #else
         let fp = popen("echo $PWD", "r")
         
