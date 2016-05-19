@@ -2,41 +2,26 @@
 import XCTest
 
 final class DirectoryTests: XCTestCase {
-    
-    // FIXME:
-    /*
-    private var pwd = String()
+    private var currentDirectory = String()
     
     override func setUp() {
         super.setUp()
         
-        let fp = popen("echo $PWD", "r")
-        
-        // FIXME: Hard-Coding
-        let bufferSize = 4096
-        var buffer = [Int8](repeating: 0, count: bufferSize + 1)
-        fgets(&buffer, Int32(bufferSize), fp)
-        pclose(fp)
-
-        pwd = String(validatingUTF8: buffer)!
-    }
-     */
-    
-    func testCurrentDirectoryPath() {
-        var cd: String
         do {
-            cd = try currentDirectoryPath()
+            currentDirectory = try currentDirectoryPath()
         } catch {
             XCTAssertThrowsError(DirectoryError.CannotGetCurrentDirectory)
             return
         }
-        guard !cd.isEmpty else {
+        guard !currentDirectory.isEmpty else {
             XCTAssertThrowsError(DirectoryError.CannotGetCurrentDirectory)
             return
         }
-        
+    }
+    
+    func testCurrentDirectoryPath() {
         #if os(Linux)
-            print("CurrentDirectoryPath: \(cd)")
+            print("CurrentDirectoryPath: \(currentDirectory)")
         #else
             let fp = popen("echo $PWD", "r")
             
@@ -44,53 +29,36 @@ final class DirectoryTests: XCTestCase {
             let bufferSize = 4096
             var buffer = [Int8](repeating: 0, count: bufferSize + 1)
             fgets(&buffer, Int32(bufferSize), fp)
-            guard let string = String(validatingUTF8: buffer) else {
+            guard let cd = String(validatingUTF8: buffer) else {
                 XCTFail()
                 return
             }
             pclose(fp)
             
-            XCTAssertEqual(String(string.characters.dropLast()), cd)
+            XCTAssertEqual(String(cd.characters.dropLast()), currentDirectory)
         #endif
     }
     
     func testChangeDirectory() {
-        #if os(Linux)
-            let path = ".."
-        #else
-            let cwd = getcwd(nil, Int(PATH_MAX))
-            guard let cd = cwd else {
-                // If buf is NULL, space is allocated as necessary to store the pathname.
-                // This space may later be free(3)'d.
-                free(cwd)
-                XCTFail("Cannot getcwd")
-                return
-            }
-            guard let path = String(validatingUTF8: cd) else {
-                XCTFail("Cannot validatingUTF8")
-                return
-            }
-        #endif
         do {
-            try changeDirectory(path: path)
+            try createDirectory(path: "\(currentDirectory)/test")
+        } catch {
+            XCTFail()
+            return
+        }
+        #if os(Linux)
+            // TODO:
+        #else
+            XCTAssertTrue(access("\(currentDirectory)/test", F_OK) == 0)
+        #endif
+
+        do {
+            try changeDirectory(path: "\(currentDirectory)/test")
         } catch {
             XCTFail("Cannot changeDirectory")
             return
         }
     }
-    
-    /*
-    func testCreateDirectory() {
-        // TODO:
-        do {
-            try createDirectory(path: "\(pwd)/test")
-        } catch {
-            XCTFail()
-            return
-        }
-        XCTAssertTrue(access("\(pwd)/test", F_OK) == 0)
-    }
-    */
 }
 
 extension DirectoryTests {
