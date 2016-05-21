@@ -11,9 +11,10 @@ final class CommandTests: XCTestCase {
     
     func testExecuteCommandNotNil() {
         guard let ls = executeCommand(argments: ["ls"]) else {
-            XCTFail()
+            XCTFail("Failed executeCommand")
             return
         }
+        print(ls)
         XCTAssertNotNil(ls)
     }
 #endif
