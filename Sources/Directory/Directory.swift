@@ -42,11 +42,19 @@ public func createDirectory(path: String) throws {
     }
 }
 
-public func isAccessibleDirectory(path: String) -> Bool {
-    // TODO: Error Handling
-    guard !path.isEmpty else { return false}
-    return access(path, F_OK) == 0
-}
+#if os(Linux)
+    public func isAccessibleDirectory(name: String) -> Bool {
+        // TODO: Error Handling
+        guard !name.isEmpty else { return false}
+        return access(name, F_OK) == 0
+    }
+#else
+    public func isAccessibleDirectory(path: String) -> Bool {
+        // TODO: Error Handling
+        guard !path.isEmpty else { return false}
+        return access(path, F_OK) == 0
+    }
+#endif
 
 public func removeDirectory(path: String) {
     rmdir(path)
