@@ -21,7 +21,7 @@ final class DirectoryTests: XCTestCase {
             return
         }
         XCTAssertNotNil(path)
-        print("currentDirectoryPath: \(path)")
+        print("CurrentDirectoryPath: \(path)")
     }
     
     func currentDirectoryForTest() -> String? {
@@ -53,7 +53,7 @@ final class DirectoryTests: XCTestCase {
             XCTFail()
             return
         }
-        print("currentDirectoryPath: \(path1)")
+        print("CurrentDirectoryPath: \(path1)")
         
         do {
             try changeDirectory(path: "\(path1)/.build")
@@ -68,7 +68,7 @@ final class DirectoryTests: XCTestCase {
             XCTFail()
             return
         }
-        print("currentDirectoryPath: \(path2)")
+        print("CurrentDirectoryPath: \(path2)")
         
         // It is necessary for making a success of the other tests
         //   to change working directory into path1.
@@ -86,9 +86,9 @@ final class DirectoryTests: XCTestCase {
             XCTFail("Failed: currentDirectoryForTest")
             return
         }
-        print(path)
-        let testCreateDirectoryName = "testCreateDirectory"
+        print("CurrentDirectoryPath: \(path)")
         
+        let testCreateDirectoryName = "testCreateDirectory"
         do {
             try createDirectory(path: "\(path)/\(testCreateDirectoryName)")
         } catch {
@@ -102,8 +102,10 @@ final class DirectoryTests: XCTestCase {
                 return
             }
             XCTAssertEqual(access(testCreateDirectoryName, F_OK), 0)
+            print("Access: \(testCreateDirectoryName)")
         #else
             XCTAssertEqual(access("\(path)/\(testCreateDirectoryName)", F_OK), 0)
+            print("Access: \(path)/\(testCreateDirectoryName)")
         #endif
         
         rmdir("\(path)/\(testCreateDirectoryName)")
@@ -114,13 +116,15 @@ final class DirectoryTests: XCTestCase {
             XCTFail("Failed: currentDirectoryForTest")
             return
         }
-        print(path)
+        print("CurrentDirectoryPath: \(path)")
         
         let testAccessibleDirectoryName = "testAccessibleDirectory"
         #if os(Linux)
             XCTAssertFalse(isAccessibleDirectory(name: testAccessibleDirectoryName))
+            print("Cannot access: \(testAccessibleDirectoryName)")
         #else
             XCTAssertFalse(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
+            print("Cannot access \(path)/\(testAccessibleDirectoryName)")
         #endif
         
         guard mkdir("\(path)/\(testAccessibleDirectoryName)", S_IRWXU | S_IRWXG | S_IRWXO) == 0 || errno == EEXIST else {
@@ -130,15 +134,19 @@ final class DirectoryTests: XCTestCase {
         
         #if os(Linux)
             XCTAssertTrue(isAccessibleDirectory(name: testAccessibleDirectoryName))
+            print("Access \(testAccessibleDirectoryName)")
         #else
             XCTAssertTrue(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
+            print("Access \(path)/\(testAccessibleDirectoryName)")
         #endif
         
         rmdir("\(path)/\(testAccessibleDirectoryName)")
         #if os(Linux)
             XCTAssertFalse(isAccessibleDirectory(name: testAccessibleDirectoryName))
+            print("Cannot access: \(testAccessibleDirectoryName)")
         #else
             XCTAssertFalse(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
+            print("Cannot access \(path)/\(testAccessibleDirectoryName)")
         #endif
     }
     
@@ -147,7 +155,7 @@ final class DirectoryTests: XCTestCase {
             XCTFail()
             return
         }
-        print(path)
+        print("CurrentDirectoryPath: \(path)")
         
         let testRemoveDirectoryName = "testRemoveDirectory"
         guard mkdir("\(path)/\(testRemoveDirectoryName)", S_IRWXU | S_IRWXG | S_IRWXO) == 0 || errno == EEXIST else {
@@ -157,6 +165,8 @@ final class DirectoryTests: XCTestCase {
         
         #if os(Linux)
             XCTAssertEqual(access(testRemoveDirectoryName, F_OK), 0)
+            print("Access \(testRemoveDirectoryName)")
+            print("Access \(path)/\(testRemoveDirectoryName)")
         #else
             XCTAssertEqual(access("\(path)/\(testRemoveDirectoryName)", F_OK), 0)
         #endif
@@ -165,8 +175,10 @@ final class DirectoryTests: XCTestCase {
         
         #if os(Linux)
             XCTAssertNotEqual(access(testRemoveDirectoryName, F_OK), 0)
+            print("Cannot access \(testRemoveDirectoryName)")
         #else
             XCTAssertNotEqual(access("\(path)/\(testRemoveDirectoryName)", F_OK), 0)
+            print("Cannot access \(path)/\(testRemoveDirectoryName)")
         #endif
     }
 }
