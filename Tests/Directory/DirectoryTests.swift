@@ -21,7 +21,7 @@ final class DirectoryTests: XCTestCase {
             return
         }
         XCTAssertNotNil(path)
-        print(path)
+        print("currentDirectoryPath: \(path)")
     }
     
     func currentDirectoryForTest() -> String? {
@@ -53,7 +53,7 @@ final class DirectoryTests: XCTestCase {
             XCTFail()
             return
         }
-        print(path1)
+        print("currentDirectoryPath: \(path1)")
         
         do {
             try changeDirectory(path: "\(path1)/.build")
@@ -68,7 +68,7 @@ final class DirectoryTests: XCTestCase {
             XCTFail()
             return
         }
-        print(path2)
+        print("currentDirectoryPath: \(path2)")
         
         // It is necessary for making a success of the other tests
         //   to change working directory into path1.
@@ -82,28 +82,30 @@ final class DirectoryTests: XCTestCase {
     }
     
     func testCreateDirectory() {
+        guard let path = currentDirectoryForTest() else {
+            XCTFail("Failed: currentDirectoryForTest")
+            return
+        }
+        print(path)
+        let testCreateDirectoryName = "testCreateDirectory"
+        
+        do {
+            try createDirectory(path: "\(path)/\(testCreateDirectoryName)")
+        } catch {
+            XCTAssertThrowsError(DirectoryError.CannotCreateDirectory)
+            return
+        }
+        
         #if os(Linux)
-
-            // TODO:
-            
+            guard chdir(path) == 0 else {
+                throw XCTFail("Cannot chdir")
+            }
+            XCTAssertEqual(access(testCreateDirectoryName, F_OK), 0)
         #else
-            guard let path = currentDirectoryForTest() else {
-                XCTFail()
-                return
-            }
-            print(path)
-            
-            do {
-                try createDirectory(path: "\(path)/testCreateDirectory")
-            } catch {
-                XCTAssertThrowsError(DirectoryError.CannotCreateDirectory)
-                return
-            }
-            
-            XCTAssertEqual(access("\(path)/testCreateDirectory", F_OK), 0)
-            
-            rmdir("\(path)/testCreateDirectory")
+            XCTAssertEqual(access("\(path)/\(testCreateDirectoryName)", F_OK), 0)
         #endif
+        
+        rmdir("\(path)/\(testCreateDirectoryName)")
     }
     
     func testIsAccessibleDirectory() {
