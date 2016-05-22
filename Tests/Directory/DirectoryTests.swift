@@ -1,5 +1,10 @@
 @testable import Directory
 import XCTest
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin
+#endif
 
 final class DirectoryTests: XCTestCase {
     func testCurrentDirectory() {
