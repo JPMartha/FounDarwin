@@ -98,7 +98,8 @@ final class DirectoryTests: XCTestCase {
         
         #if os(Linux)
             guard chdir(path) == 0 else {
-                throw XCTFail("Cannot chdir")
+                XCTFail("Cannot chdir")
+                return
             }
             XCTAssertEqual(access(testCreateDirectoryName, F_OK), 0)
         #else
