@@ -49,42 +49,36 @@ final class DirectoryTests: XCTestCase {
     }
     
     func testChangeDirectory() {
-        #if os(Linux)
-            
-            // TODO:
-            
-        #else
-            guard let path1 = currentDirectoryForTest() else {
-                XCTFail()
-                return
-            }
-            print(path1)
-            
-            do {
-                try changeDirectory(path: "\(path1)/.build")
-            } catch {
-                XCTAssertThrowsError(DirectoryError.CannotChangeDirectory)
-                return
-            }
-            
-            // TODO: Verify
-            
-            guard let path2 = currentDirectoryForTest() else {
-                XCTFail()
-                return
-            }
-            print(path2)
-            
-            // It is necessary for making a success of the other tests
-            //   to change working directory into path1.
-            
-            do {
-                try changeDirectory(path: path1)
-            } catch {
-                XCTAssertThrowsError(DirectoryError.CannotChangeDirectory)
-                return
-            }
-        #endif
+        guard let path1 = currentDirectoryForTest() else {
+            XCTFail()
+            return
+        }
+        print(path1)
+        
+        do {
+            try changeDirectory(path: "\(path1)/.build")
+        } catch {
+            XCTAssertThrowsError(DirectoryError.CannotChangeDirectory)
+            return
+        }
+        
+        // TODO: Verify
+        
+        guard let path2 = currentDirectoryForTest() else {
+            XCTFail()
+            return
+        }
+        print(path2)
+        
+        // It is necessary for making a success of the other tests
+        //   to change working directory into path1.
+        
+        do {
+            try changeDirectory(path: path1)
+        } catch {
+            XCTAssertThrowsError(DirectoryError.CannotChangeDirectory)
+            return
+        }
     }
     
     func testCreateDirectory() {
