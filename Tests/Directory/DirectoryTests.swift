@@ -166,7 +166,6 @@ final class DirectoryTests: XCTestCase {
         #if os(Linux)
             XCTAssertEqual(access(testRemoveDirectoryName, F_OK), 0)
             print("Access \(testRemoveDirectoryName)")
-            print("Access \(path)/\(testRemoveDirectoryName)")
         #else
             XCTAssertEqual(access("\(path)/\(testRemoveDirectoryName)", F_OK), 0)
         #endif
