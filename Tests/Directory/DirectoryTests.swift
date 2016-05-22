@@ -1,86 +1,178 @@
 @testable import Directory
 import XCTest
+#if os(Linux)
+    import Glibc
+#else
+    import Darwin
+#endif
 
 final class DirectoryTests: XCTestCase {
-    
-    // FIXME:
-    /*
-    private var pwd = String()
-    
-    override func setUp() {
-        super.setUp()
-        
-        let fp = popen("echo $PWD", "r")
-        
-        // FIXME: Hard-Coding
-        let bufferSize = 4096
-        var buffer = [Int8](repeating: 0, count: bufferSize + 1)
-        fgets(&buffer, Int32(bufferSize), fp)
-        pclose(fp)
-
-        pwd = String(validatingUTF8: buffer)!
-    }
-     */
-    
-    func testCurrentDirectoryPath() {
-        var cd: String
+    func testCurrentDirectory() {
+        var cd = String()
         do {
             cd = try currentDirectoryPath()
         } catch {
             XCTAssertThrowsError(DirectoryError.CannotGetCurrentDirectory)
             return
         }
-        guard !cd.isEmpty else {
-            XCTAssertThrowsError(DirectoryError.CannotGetCurrentDirectory)
-            return
-        }
         
-        #if os(Linux)
-        #else
-        let fp = popen("echo $PWD", "r")
-        
-        // FIXME: Hard-Coding
-        let bufferSize = 4096
-        var buffer = [Int8](repeating: 0, count: bufferSize + 1)
-        fgets(&buffer, Int32(bufferSize), fp)
-        guard let string = String(validatingUTF8: buffer) else {
+        guard let path = String(validatingUTF8: cd) else {
             XCTFail()
             return
         }
-        pclose(fp)
+        XCTAssertNotNil(path)
+        print(path)
+    }
+    
+    func currentDirectoryForTest() -> String? {
+        #if os(Linux)
+            let cwd = getcwd(nil, 0)
+            guard let cd = cwd else {
+                free(cwd)
+                XCTFail("Cannot getcwd.")
+                return nil
+            }
+        #else
+            let cwd = getcwd(nil, Int(PATH_MAX))
+            guard let cd = cwd else {
+                free(cwd)
+                XCTFail("Cannot getcwd.")
+                return nil
+            }
+        #endif
         
-        XCTAssertEqual(String(string.characters.dropLast()), cd)
+        guard let path = String(validatingUTF8: cd) else {
+            XCTFail("Cannot validatingUTF8.")
+            return nil
+        }
+        return path
+    }
+    
+    func testChangeDirectory() {
+        #if os(Linux)
+            
+            // TODO:
+            
+        #else
+            guard let path1 = currentDirectoryForTest() else {
+                XCTFail()
+                return
+            }
+            print(path1)
+            
+            do {
+                try changeDirectory(path: "\(path1)/.build")
+            } catch {
+                XCTAssertThrowsError(DirectoryError.CannotChangeDirectory)
+                return
+            }
+            
+            // TODO: Verify
+            
+            guard let path2 = currentDirectoryForTest() else {
+                XCTFail()
+                return
+            }
+            print(path2)
+            
+            // It is necessary for making a success of the other tests
+            //   to change working directory into path1.
+            
+            do {
+                try changeDirectory(path: path1)
+            } catch {
+                XCTAssertThrowsError(DirectoryError.CannotChangeDirectory)
+                return
+            }
         #endif
     }
     
-    /*
-    func testChangeDirectory() {
-        // TODO:
-        do {
-            try changeDirectory(path: "\(pwd)")
-        } catch {
-            XCTFail()
-            return
-        }
+    func testCreateDirectory() {
+        #if os(Linux)
+
+            // TODO:
+            
+        #else
+            guard let path = currentDirectoryForTest() else {
+                XCTFail()
+                return
+            }
+            print(path)
+            
+            do {
+                try createDirectory(path: "\(path)/testCreateDirectory")
+            } catch {
+                XCTAssertThrowsError(DirectoryError.CannotCreateDirectory)
+                return
+            }
+            
+            XCTAssertEqual(access("\(path)/testCreateDirectory", F_OK), 0)
+            
+            rmdir("\(path)/testCreateDirectory")
+        #endif
     }
     
-    func testCreateDirectory() {
-        // TODO:
-        do {
-            try createDirectory(path: "\(pwd)/test")
-        } catch {
-            XCTFail()
-            return
-        }
-        XCTAssertTrue(access("\(pwd)/test", F_OK) == 0)
+    func testIsAccessibleDirectory() {
+        #if os(Linux)
+
+            // TODO:
+
+        #else
+            guard let path = currentDirectoryForTest() else {
+                XCTFail()
+                return
+            }
+            print(path)
+            
+            let testAccessibleDirectory = "\(path)/testAccessibleDirectory"
+            XCTAssertFalse(isAccessibleDirectory(path: testAccessibleDirectory))
+            
+            guard mkdir(testAccessibleDirectory, S_IRWXU | S_IRWXG | S_IRWXO) == 0 || errno == EEXIST else {
+                XCTFail("Cannot mkdir")
+                return
+            }
+            XCTAssertTrue(isAccessibleDirectory(path: testAccessibleDirectory))
+            
+            rmdir(testAccessibleDirectory)
+            XCTAssertFalse(isAccessibleDirectory(path: testAccessibleDirectory))
+        #endif
     }
-    */
+    
+    func testRemoveDirectory() {
+        #if os(Linux)
+
+            // TODO:
+
+        #else
+            guard let path = currentDirectoryForTest() else {
+                XCTFail()
+                return
+            }
+            print(path)
+            
+            let testRemoveDirectory = "\(path)/testRemoveDirectory"
+            guard mkdir(testRemoveDirectory, S_IRWXU | S_IRWXG | S_IRWXO) == 0 || errno == EEXIST else {
+                XCTFail()
+                return
+            }
+            
+            XCTAssertEqual(access(testRemoveDirectory, F_OK), 0)
+            
+            removeDirectory(path: testRemoveDirectory)
+            
+            XCTAssertNotEqual(access(testRemoveDirectory, F_OK), 0)
+        #endif
+    }
 }
 
 extension DirectoryTests {
     static var allTests : [(String, (DirectoryTests) -> () throws -> Void)] {
         return [
-                   ("testCurrentDirectoryPath", testCurrentDirectoryPath),
+                   ("testCurrentDirectory", testCurrentDirectory),
+                   ("testChangeDirectory", testChangeDirectory),
+                   ("testCreateDirectory", testCreateDirectory),
+                   ("testIsAccessibleDirectory", testIsAccessibleDirectory),
+                   ("testRemoveDirectory", testRemoveDirectory),
         ]
     }
 }
