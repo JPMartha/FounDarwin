@@ -110,54 +110,63 @@ final class DirectoryTests: XCTestCase {
     }
     
     func testIsAccessibleDirectory() {
+        guard let path = currentDirectoryForTest() else {
+            XCTFail("Failed: currentDirectoryForTest")
+            return
+        }
+        print(path)
+        
+        let testAccessibleDirectoryName = "testAccessibleDirectory"
         #if os(Linux)
-
-            // TODO:
-
+            XCTAssertFalse(isAccessibleDirectory(path: testAccessibleDirectoryName))
         #else
-            guard let path = currentDirectoryForTest() else {
-                XCTFail()
-                return
-            }
-            print(path)
-            
-            let testAccessibleDirectory = "\(path)/testAccessibleDirectory"
-            XCTAssertFalse(isAccessibleDirectory(path: testAccessibleDirectory))
-            
-            guard mkdir(testAccessibleDirectory, S_IRWXU | S_IRWXG | S_IRWXO) == 0 || errno == EEXIST else {
-                XCTFail("Cannot mkdir")
-                return
-            }
-            XCTAssertTrue(isAccessibleDirectory(path: testAccessibleDirectory))
-            
-            rmdir(testAccessibleDirectory)
-            XCTAssertFalse(isAccessibleDirectory(path: testAccessibleDirectory))
+            XCTAssertFalse(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
+        #endif
+        
+        guard mkdir("\(path)/\(testAccessibleDirectoryName)", S_IRWXU | S_IRWXG | S_IRWXO) == 0 || errno == EEXIST else {
+            XCTFail("Cannot mkdir")
+            return
+        }
+        
+        #if os(Linux)
+            XCTAssertTrue(isAccessibleDirectory(path: testAccessibleDirectoryName))
+        #else
+            XCTAssertTrue(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
+        #endif
+        
+        rmdir("\(path)/\(testAccessibleDirectoryName)")
+        #if os(Linux)
+            XCTAssertFalse(isAccessibleDirectory(path: testAccessibleDirectoryName))
+        #else
+            XCTAssertFalse(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
         #endif
     }
     
     func testRemoveDirectory() {
+        guard let path = currentDirectoryForTest() else {
+            XCTFail()
+            return
+        }
+        print(path)
+        
+        let testRemoveDirectoryName = "testRemoveDirectory"
+        guard mkdir("\(path)/\(testRemoveDirectoryName)", S_IRWXU | S_IRWXG | S_IRWXO) == 0 || errno == EEXIST else {
+            XCTFail()
+            return
+        }
+        
         #if os(Linux)
-
-            // TODO:
-
+            XCTAssertEqual(access(testRemoveDirectoryName, F_OK), 0)
         #else
-            guard let path = currentDirectoryForTest() else {
-                XCTFail()
-                return
-            }
-            print(path)
-            
-            let testRemoveDirectory = "\(path)/testRemoveDirectory"
-            guard mkdir(testRemoveDirectory, S_IRWXU | S_IRWXG | S_IRWXO) == 0 || errno == EEXIST else {
-                XCTFail()
-                return
-            }
-            
-            XCTAssertEqual(access(testRemoveDirectory, F_OK), 0)
-            
-            removeDirectory(path: testRemoveDirectory)
-            
-            XCTAssertNotEqual(access(testRemoveDirectory, F_OK), 0)
+            XCTAssertEqual(access("\(path)/\(testRemoveDirectoryName)", F_OK), 0)
+        #endif
+        
+        removeDirectory(path: "\(path)/\(testRemoveDirectoryName)")
+        
+        #if os(Linux)
+            XCTAssertNotEqual(access(testRemoveDirectoryName, F_OK), 0)
+        #else
+            XCTAssertNotEqual(access("\(path)/\(testRemoveDirectoryName)", F_OK), 0)
         #endif
     }
 }
