@@ -118,7 +118,7 @@ final class DirectoryTests: XCTestCase {
         
         let testAccessibleDirectoryName = "testAccessibleDirectory"
         #if os(Linux)
-            XCTAssertFalse(isAccessibleDirectory(path: testAccessibleDirectoryName))
+            XCTAssertFalse(isAccessibleDirectory(name: testAccessibleDirectoryName))
         #else
             XCTAssertFalse(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
         #endif
@@ -129,14 +129,14 @@ final class DirectoryTests: XCTestCase {
         }
         
         #if os(Linux)
-            XCTAssertTrue(isAccessibleDirectory(path: testAccessibleDirectoryName))
+            XCTAssertTrue(isAccessibleDirectory(name: testAccessibleDirectoryName))
         #else
             XCTAssertTrue(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
         #endif
         
         rmdir("\(path)/\(testAccessibleDirectoryName)")
         #if os(Linux)
-            XCTAssertFalse(isAccessibleDirectory(path: testAccessibleDirectoryName))
+            XCTAssertFalse(isAccessibleDirectory(name: testAccessibleDirectoryName))
         #else
             XCTAssertFalse(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
         #endif
