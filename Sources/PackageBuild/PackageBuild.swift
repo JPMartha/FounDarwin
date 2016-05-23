@@ -3,7 +3,7 @@
 #else
     import Darwin
 #endif
-import func Directory.createDirectory
+import func Directory.create
 import enum Directory.DirectoryError
 
 /**
@@ -14,7 +14,7 @@ public func preparePackage(targetDirectoryPath path: String, targetFileName name
     // TODO: clearly
     let packageDirectoryName = "package"
     do {
-        try Directory.createDirectory(path: "\(path)/\(packageDirectoryName)")
+        try Directory.create(path: "\(path)/\(packageDirectoryName)")
     } catch {
         throw DirectoryError.CannotCreateDirectory
     }
