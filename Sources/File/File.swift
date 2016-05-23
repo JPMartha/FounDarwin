@@ -6,7 +6,7 @@
 
 #if os(Linux)
     public func isAccessible(name: String) -> Bool {
-        guard !path.isEmpty else { return false}
+        guard !name.isEmpty else { return false}
         return access(name, F_OK) == 0
     }
     
