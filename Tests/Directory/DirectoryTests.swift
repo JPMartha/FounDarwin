@@ -142,7 +142,7 @@ final class DirectoryTests: XCTestCase {
         
         rmdir("\(path)/\(testAccessibleDirectoryName)")
         #if os(Linux)
-            XCTAssertFalse(isAccessibleDirectory(name: testAccessibleDirectoryName))
+            XCTAssertFalse(isAccessible(name: testAccessibleDirectoryName))
             print("Cannot access: \(testAccessibleDirectoryName)")
         #else
             XCTAssertFalse(isAccessible(path: "\(path)/\(testAccessibleDirectoryName)"))
@@ -170,7 +170,7 @@ final class DirectoryTests: XCTestCase {
             XCTAssertEqual(access("\(path)/\(testRemoveDirectoryName)", F_OK), 0)
         #endif
         
-        remove(path: "\(path)/\(testRemoveDirectoryName)")
+        Directory.remove(path: "\(path)/\(testRemoveDirectoryName)")
         
         #if os(Linux)
             XCTAssertNotEqual(access(testRemoveDirectoryName, F_OK), 0)
