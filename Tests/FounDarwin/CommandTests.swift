@@ -17,6 +17,26 @@ final class CommandTests: XCTestCase {
         print(ls)
         XCTAssertNotNil(ls)
     }
+    
+    func testDownloadAndInstallDevelopmentSnapshots() {
+        downloadDevelopmentSnapshots(version: "swift-DEVELOPMENT-SNAPSHOT-2016-05-09-a")
+        do {
+            try installDevelopmentSnapshots(version: "swift-DEVELOPMENT-SNAPSHOT-2016-05-09-a")
+        } catch {
+            XCTFail()
+        }
+        removePkgFile(snapshotVersion: "swift-DEVELOPMENT-SNAPSHOT-2016-05-09-a")
+    }
+    
+    func testDownloadAndInstallPreview1Snapshots() {
+        downloadPreview1Snapshots(version: "swift-3.0-preview-1-SNAPSHOT-2016-05-31-a")
+        do {
+            try installPreview1Snapshots(version: "swift-3.0-preview-1-SNAPSHOT-2016-05-31-a")
+        } catch {
+            XCTFail()
+        }
+        removePkgFile(snapshotVersion: "swift-3.0-preview-1-SNAPSHOT-2016-05-31-a")
+    }
 #endif
 }
 
@@ -27,6 +47,8 @@ extension CommandTests {
         return [
                    ("testExecuteCommandNil", testExecuteCommandNil),
                    ("testExecuteCommandNotNil", testExecuteCommandNotNil),
+                   ("testDownloadAndInstallDevelopmentSnapshots", testDownloadAndInstallDevelopmentSnapshots),
+                   ("testDownloadAndInstallPreview1Snapshots", testDownloadAndInstallPreview1Snapshots),
         ]
     }
 #endif

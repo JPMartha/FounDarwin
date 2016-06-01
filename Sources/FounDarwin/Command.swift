@@ -12,7 +12,7 @@ private var cd = String()
 #else
 public func executeCommand(argments args: [String]) -> String? {
     var pipe: [Int32] = [0, 0]
-    Darwin.pipe(&pipe)
+    _ = Darwin.pipe(&pipe)
     
     var fileActions: posix_spawn_file_actions_t? = nil
     posix_spawn_file_actions_init(&fileActions)
@@ -52,7 +52,7 @@ public func executeCommand(argments args: [String]) -> String? {
     return outputString.isEmpty ? nil : outputString
 }
 
-public func downloadDevelopmentSnapshot(version: String) {
+public func downloadDevelopmentSnapshots(version: String) {
     
     // A Work In Progress
     
@@ -66,7 +66,7 @@ public func downloadDevelopmentSnapshot(version: String) {
     print("")
 }
 
-public func installDevelopmentSnapshot(version: String) throws {
+public func installDevelopmentSnapshots(version: String) throws {
     
     // A Work In Progress
     
@@ -92,6 +92,46 @@ public func installDevelopmentSnapshot(version: String) throws {
     print("")
 }
 
+public func downloadPreview1Snapshots(version: String) {
+    
+    // A Work In Progress
+    
+    let fp = popen("curl -O https://swift.org/builds/swift-3.0-preview-1-branch/xcode/\(version)/\(version)-osx.pkg", "r")
+    print("")
+    print("Downloading...")
+    print("")
+    
+    pclose(fp)
+    
+    print("")
+}
+
+public func installPreview1Snapshots(version: String) throws {
+    
+    // A Work In Progress
+    
+    do {
+        cd = try currentDirectoryPath()
+    } catch {
+        // TODO: Error Handling
+        throw DirectoryError.CannotGetCurrentDirectory
+    }
+    
+    guard !cd.isEmpty else {
+        // TODO: Error Handling
+        throw DirectoryError.CannotGetCurrentDirectory
+    }
+    
+    let fp = popen("sudo installer -pkg \(cd)/\(version)-osx.pkg -target /", "w")
+    print("")
+    print("Installing...")
+    print("")
+    
+    pclose(fp)
+    
+    print("")
+}
+    
 public func removePkgFile(snapshotVersion: String) {
     
     // A Work In Progress
