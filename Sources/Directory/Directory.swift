@@ -29,13 +29,13 @@ public func currentDirectoryPath() throws -> String {
     return path
 }
 
-public func changeDirectory(path: String) throws {
+public func change(path: String) throws {
     guard chdir(path) == 0 else {
         throw DirectoryError.CannotChangeDirectory
     }
 }
 
-public func createDirectory(path: String) throws {
+public func create(path: String) throws {
     // TODO: Consider about the modes
     guard mkdir(path, S_IRWXU | S_IRWXG | S_IRWXO) == 0 || errno == EEXIST else {
         throw DirectoryError.CannotCreateDirectory
@@ -43,19 +43,19 @@ public func createDirectory(path: String) throws {
 }
 
 #if os(Linux)
-    public func isAccessibleDirectory(name: String) -> Bool {
+    public func isAccessible(name: String) -> Bool {
         // TODO: Error Handling
         guard !name.isEmpty else { return false}
         return access(name, F_OK) == 0
     }
 #else
-    public func isAccessibleDirectory(path: String) -> Bool {
+    public func isAccessible(path: String) -> Bool {
         // TODO: Error Handling
         guard !path.isEmpty else { return false}
         return access(path, F_OK) == 0
     }
 #endif
 
-public func removeDirectory(path: String) {
+public func remove(path: String) {
     rmdir(path)
 }
