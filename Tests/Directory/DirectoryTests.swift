@@ -48,7 +48,7 @@ final class DirectoryTests: XCTestCase {
         return path
     }
     
-    func testChangeDirectory() {
+    func testChange() {
         guard let path1 = currentDirectoryForTest() else {
             XCTFail()
             return
@@ -56,7 +56,7 @@ final class DirectoryTests: XCTestCase {
         print("CurrentDirectoryPath: \(path1)")
         
         do {
-            try changeDirectory(path: "\(path1)/.build")
+            try change(path: "\(path1)/.build")
         } catch {
             XCTAssertThrowsError(DirectoryError.CannotChangeDirectory)
             return
@@ -74,14 +74,14 @@ final class DirectoryTests: XCTestCase {
         //   to change working directory into path1.
         
         do {
-            try changeDirectory(path: path1)
+            try change(path: path1)
         } catch {
             XCTAssertThrowsError(DirectoryError.CannotChangeDirectory)
             return
         }
     }
     
-    func testCreateDirectory() {
+    func testCreate() {
         guard let path = currentDirectoryForTest() else {
             XCTFail("Failed: currentDirectoryForTest")
             return
@@ -90,7 +90,7 @@ final class DirectoryTests: XCTestCase {
         
         let testCreateDirectoryName = "testCreateDirectory"
         do {
-            try createDirectory(path: "\(path)/\(testCreateDirectoryName)")
+            try create(path: "\(path)/\(testCreateDirectoryName)")
         } catch {
             XCTAssertThrowsError(DirectoryError.CannotCreateDirectory)
             return
@@ -111,7 +111,7 @@ final class DirectoryTests: XCTestCase {
         rmdir("\(path)/\(testCreateDirectoryName)")
     }
     
-    func testIsAccessibleDirectory() {
+    func testIsAccessible() {
         guard let path = currentDirectoryForTest() else {
             XCTFail("Failed: currentDirectoryForTest")
             return
@@ -120,10 +120,10 @@ final class DirectoryTests: XCTestCase {
         
         let testAccessibleDirectoryName = "testAccessibleDirectory"
         #if os(Linux)
-            XCTAssertFalse(isAccessibleDirectory(name: testAccessibleDirectoryName))
+            XCTAssertFalse(isAccessible(name: testAccessibleDirectoryName))
             print("Cannot access: \(testAccessibleDirectoryName)")
         #else
-            XCTAssertFalse(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
+            XCTAssertFalse(isAccessible(path: "\(path)/\(testAccessibleDirectoryName)"))
             print("Cannot access \(path)/\(testAccessibleDirectoryName)")
         #endif
         
@@ -133,24 +133,24 @@ final class DirectoryTests: XCTestCase {
         }
         
         #if os(Linux)
-            XCTAssertTrue(isAccessibleDirectory(name: testAccessibleDirectoryName))
+            XCTAssertTrue(isAccessible(name: testAccessibleDirectoryName))
             print("Access \(testAccessibleDirectoryName)")
         #else
-            XCTAssertTrue(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
+            XCTAssertTrue(isAccessible(path: "\(path)/\(testAccessibleDirectoryName)"))
             print("Access \(path)/\(testAccessibleDirectoryName)")
         #endif
         
         rmdir("\(path)/\(testAccessibleDirectoryName)")
         #if os(Linux)
-            XCTAssertFalse(isAccessibleDirectory(name: testAccessibleDirectoryName))
+            XCTAssertFalse(isAccessible(name: testAccessibleDirectoryName))
             print("Cannot access: \(testAccessibleDirectoryName)")
         #else
-            XCTAssertFalse(isAccessibleDirectory(path: "\(path)/\(testAccessibleDirectoryName)"))
+            XCTAssertFalse(isAccessible(path: "\(path)/\(testAccessibleDirectoryName)"))
             print("Cannot access \(path)/\(testAccessibleDirectoryName)")
         #endif
     }
     
-    func testRemoveDirectory() {
+    func testRemove() {
         guard let path = currentDirectoryForTest() else {
             XCTFail()
             return
@@ -170,7 +170,7 @@ final class DirectoryTests: XCTestCase {
             XCTAssertEqual(access("\(path)/\(testRemoveDirectoryName)", F_OK), 0)
         #endif
         
-        removeDirectory(path: "\(path)/\(testRemoveDirectoryName)")
+        Directory.remove(path: "\(path)/\(testRemoveDirectoryName)")
         
         #if os(Linux)
             XCTAssertNotEqual(access(testRemoveDirectoryName, F_OK), 0)
@@ -186,10 +186,10 @@ extension DirectoryTests {
     static var allTests : [(String, (DirectoryTests) -> () throws -> Void)] {
         return [
                    ("testCurrentDirectory", testCurrentDirectory),
-                   ("testChangeDirectory", testChangeDirectory),
-                   ("testCreateDirectory", testCreateDirectory),
-                   ("testIsAccessibleDirectory", testIsAccessibleDirectory),
-                   ("testRemoveDirectory", testRemoveDirectory),
+                   ("testChange", testChange),
+                   ("testCreate", testCreate),
+                   ("testIsAccessible", testIsAccessible),
+                   ("testRemove", testRemove),
         ]
     }
 }

@@ -1,5 +1,6 @@
 public enum FileError: ErrorProtocol {
     case CannotRemoveFile
+    case CannotRename
 }
 
 extension FileError: CustomStringConvertible {
@@ -7,6 +8,8 @@ extension FileError: CustomStringConvertible {
         switch self {
         case .CannotRemoveFile:
             return "Cannot remove file."
+        case .CannotRename:
+            return "Cannot rename file."
         }
     }
 }
