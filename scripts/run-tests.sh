@@ -9,7 +9,7 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 	export PATH="${PWD}/${SWIFT_VERSION}-ubuntu14.04/usr/bin:${PATH}"
 	cd "$DIR"
 else
-	export SWIFT_VERSION=swift-DEVELOPMENT-SNAPSHOT-2016-05-09-a
+	export SWIFT_VERSION=swift-DEVELOPMENT-SNAPSHOT-2016-05-03-a
 	curl -O https://swift.org/builds/development/xcode/${SWIFT_VERSION}/${SWIFT_VERSION}-osx.pkg
 	sudo installer -pkg ${SWIFT_VERSION}-osx.pkg -target /
 	export TOOLCHAINS=swift
